@@ -534,9 +534,161 @@ function hmrAcceptRun(bundle, id) {
 },{}],"b9BDZ":[function(require,module,exports) {
 var _resetScss = require("./css/reset.scss");
 var _styleScss = require("./css/style.scss");
-var _scroll = require("./scripts/scroll");
+var _navJs = require("./scripts/nav.js");
+var _sliderJs = require("./scripts/slider.js");
 
-},{"./css/reset.scss":"e9Ydr","./css/style.scss":"ke2LH","./scripts/scroll":"dgS1m"}],"e9Ydr":[function() {},{}],"ke2LH":[function() {},{}],"dgS1m":[function(require,module,exports) {
+},{"./css/reset.scss":"e9Ydr","./css/style.scss":"ke2LH","./scripts/nav.js":"6G5wg","./scripts/slider.js":"67dgZ"}],"e9Ydr":[function() {},{}],"ke2LH":[function() {},{}],"6G5wg":[function(require,module,exports) {
+console.clear();
+const tl = gsap.timeline({
+    paused: true,
+    defaults: {
+        duration: 0.3
+    }
+});
+const playButton = document.querySelector("#play");
+const closeButton = document.querySelector("#close");
+const Nav = document.querySelector("#nav");
+const navbar_1 = document.querySelector("#navbar_1");
+const navbar_2 = document.querySelector("#navbar_2");
+const navbar_3 = document.querySelector("#navbar_3");
+const DevButton = document.querySelector("#dev");
+playButton.addEventListener("click", ()=>{
+    tl.to(playButton, {
+        scale: 0.5
+    }).to(navbar_1, {
+        rotation: "45%"
+    }, "<").to(navbar_2, {
+        rotation: "-45%"
+    }, "<").to(navbar_3, {
+        rotation: "45%"
+    }, "<").to(playButton, {
+        opacity: 0
+    }, "<").to(Nav, {
+        x: "-100%"
+    });
+    tl.play();
+});
+closeButton.addEventListener("click", ()=>{
+    tl.to(playButton, {
+        scale: 1
+    }).to(navbar_1, {
+        rotation: "0%"
+    }, "<").to(navbar_2, {
+        rotation: "0%"
+    }, "<").to(navbar_3, {
+        rotation: "0%"
+    }, "<").to(playButton, {
+        opacity: 1
+    }, "<").to(Nav, {
+        x: 0
+    }, "<");
+    tl.play();
+});
+DevButton.addEventListener("click", ()=>{
+    tl.to(playButton, {
+        scale: 1
+    }).to(navbar_1, {
+        rotation: "0%"
+    }, "<").to(navbar_2, {
+        rotation: "0%"
+    }, "<").to(navbar_3, {
+        rotation: "0%"
+    }, "<").to(playButton, {
+        opacity: 1
+    }, "<").to(Nav, {
+        x: 0
+    }, "<");
+    tl.play();
+});
+
+},{}],"67dgZ":[function(require,module,exports) {
+(function($) {
+    $(document).ready(function() {
+        var s = $(".slider"), sWrapper = s.find(".slider-wrapper"), sItem = s.find(".slide"), btn = s.find(".slider-link"), sWidth = sItem.width(), sCount = sItem.length, slide_date = s.find(".slide-date"), slide_title = s.find(".slide-title"), slide_text = s.find(".slide-text"), slide_more = s.find(".slide-more"), slide_image = s.find(".slide-image img"), sTotalWidth = sCount * sWidth;
+        sWrapper.css("width", sTotalWidth);
+        sWrapper.css("width", sTotalWidth);
+        var clickCount = 0;
+        //CLICK EVENT
+        btn.on("click", function(e) {
+            e.preventDefault();
+            if ($(this).hasClass("next")) clickCount < sCount - 1 ? clickCount++ : clickCount = 0;
+            else if ($(this).hasClass("prev")) clickCount > 0 ? clickCount-- : clickCount = sCount - 1;
+            gsap.to(sWrapper, 0.4, {
+                x: "-" + sWidth * clickCount
+            });
+            //CONTENT ANIMATIONS
+            var fromProperties = {
+                autoAlpha: 0,
+                x: "-50",
+                y: "-10"
+            };
+            var toProperties = {
+                autoAlpha: 0.8,
+                x: "0",
+                y: "0"
+            };
+            gsap.fromTo(slide_image, 1, {
+                autoAlpha: 0
+            }, {
+                autoAlpha: 1,
+                y: "0"
+            });
+            gsap.fromTo(slide_date, 0.4, fromProperties, toProperties);
+            gsap.fromTo(slide_title, 0.6, fromProperties, toProperties);
+            gsap.fromTo(slide_text, 0.8, fromProperties, toProperties);
+            gsap.fromTo(slide_more, 1, fromProperties, toProperties);
+        });
+    });
+})(jQuery);
+$(".overlay").addClass("overlay-blue");
+// https://codepen.io/gvrban/pen/qjbpaa
+// AUTOPLAY
+// https://codepen.io/AngelKrak/pen/jbrObj
+$(document).ready(function() {
+    var slides, timer;
+    slides = $("#slider .slidesContainer > .slide");
+    function sliderScroll(direction) {
+        position = $("#slider").scrollLeft();
+        totalWidth = slides.length * slides[0].offsetWidth - slides[0].offsetWidth;
+        switch(direction){
+            case "right":
+                if (position + slides[0].offsetWidth > totalWidth) $("#slider:not(:animated)").animate({
+                    scrollLeft: 0
+                }, 1000);
+                else $("#slider:not(:animated)").animate({
+                    scrollLeft: position + slides[0].offsetWidth
+                }, 1000);
+                break;
+            case "left":
+                if (position - slides[0].offsetWidth < 0) $("#slider:not(:animated)").animate({
+                    scrollLeft: totalWidth
+                }, 1000);
+                else $("#slider:not(:animated)").animate({
+                    scrollLeft: position - slides[0].offsetWidth
+                }, 1000);
+                break;
+        }
+    }
+    function initTimer() {
+        timer = setInterval(function() {
+            sliderScroll("right");
+        }, 5000);
+    }
+    $("#slider .slidesContainer").css("width", slides[0].offsetWidth * slides.length);
+    $(".next").click(function() {
+        clearInterval(timer);
+        sliderScroll("right");
+        initTimer();
+        return false;
+    });
+    $(".prev").click(function() {
+        clearInterval(timer);
+        sliderScroll("left");
+        initTimer();
+        return false;
+    });
+    initTimer();
+});
 
 },{}]},["58fS8","b9BDZ"], "b9BDZ", "parcelRequire16bc")
 
